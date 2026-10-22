@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+    <title>Glance</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="bar">
+        <div class="brand"><span class="dot" id="listenDot"></span>Glance</div>
+        <div class="bar-actions">
+          <button id="listenBtn" class="icon" title="Start/stop listening (Ctrl/Cmd+Shift+L)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
+          <button id="settingsBtn" class="icon" title="Settings">⚙</button>
+          <button id="hideBtn" class="icon" title="Hide (Ctrl/Cmd+Shift+Space)">–</button>
+          <button id="quitBtn" class="icon" title="Quit">✕</button>
+        </div>
+      </header>
+
+      <div id="clickThroughBanner" class="banner hidden">Click-through on. Press Ctrl/Cmd+Shift+X to interact.</div>
+
+      <details id="transcriptPanel" class="transcript">
+        <summary>Live transcript <span id="transcriptStatus" class="muted">(off)</span></summary>
+        <div id="transcript" class="transcript-body"><span class="muted">Press the mic button (Ctrl/Cmd+Shift+L) to start listening.</span></div>
+        <div class="transcript-actions">
+          <button id="clearTranscriptBtn" class="link">Clear</button>
+        </div>
+      </details>
+
+      <main id="messages" class="messages">
+        <div class="empty">
+          <p><b>Ask anything</b>, or use a shortcut:</p>
+          <ul>
+            <li><kbd>Ctrl/Cmd+Shift+Enter</kbd> ask about your screen</li>
+            <li><kbd>Ctrl/Cmd+Shift+L</kbd> start/stop listening</li>
+            <li><kbd>Ctrl/Cmd+Shift+K</kbd> suggest what to say</li>
+            <li><kbd>Ctrl/Cmd+Shift+Space</kbd> show/hide</li>
+            <li><kbd>Ctrl/Cmd+Shift+X</kbd> click-through</li>
+          </ul>
+        </div>
+      </main>
+
+      <footer class="composer">
+        <textarea id="input" rows="2" placeholder="Ask… (Enter to send, Shift+Enter for newline)"></textarea>
+        <div class="composer-row">
+          <label class="toggle"><input type="checkbox" id="withScreen" /> Include screen</label>
+          <div class="composer-buttons">
+            <button id="suggestBtn" title="Suggest a reply from the transcript">Suggest</button>
+            <button id="sendBtn" class="primary">Ask</button>
+          </div>
+        </div>
+      </footer>
+
+      <section id="settingsPanel" class="settings hidden">
+        <h2>Settings</h2>
+        <label>API key <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" /></label>
+        <label>Base URL <input id="baseUrl" placeholder="https://api.openai.com/v1" /></label>
+        <label>Chat model (vision-capable) <input id="model" placeholder="gpt-4o-mini" /></label>
+        <label>Transcription model <input id="transcribeModel" placeholder="whisper-1" /></label>
+        <label class="toggle"><input type="checkbox" id="captureSystemAudio" /> Also capture system audio (Windows)</label>
+        <label class="toggle"><input type="checkbox" id="autoSuggest" /> Auto-suggest when a question is heard</label>
+        <label>Custom instructions <textarea id="customInstructions" rows="3" placeholder="e.g. I'm a sales rep for Acme; our pricing is…"></textarea></label>
+        <div class="settings-actions">
+          <button id="settingsCancel">Cancel</button>
+          <button id="settingsSave" class="primary">Save</button>
+        </div>
+      </section>
+    </div>
+    <script src="markdown.js"></script>
+    <script src="audio.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>

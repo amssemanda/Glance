@@ -1,0 +1,95 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+body {
+  font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
+  color: #e9ecf1;
+}
+#app {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 20, 26, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+button, input, textarea { font: inherit; color: inherit; }
+button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+button:hover { background: rgba(255, 255, 255, 0.16); }
+button:disabled { opacity: 0.5; cursor: default; }
+button.primary { background: #4f7cff; border-color: #4f7cff; }
+button.primary:hover { background: #6a90ff; }
+button.icon { padding: 2px 8px; display: inline-flex; align-items: center; background: transparent; border-color: transparent; }
+button.icon:hover { background: rgba(255, 255, 255, 0.12); }
+button.icon.active { background: rgba(255, 80, 80, 0.25); }
+button.link { background: none; border: none; color: #8fa8ff; padding: 0; }
+.hidden { display: none !important; }
+.muted { color: #8a93a3; font-weight: normal; }
+
+.bar {
+  -webkit-app-region: drag;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bar button { -webkit-app-region: no-drag; }
+.brand { font-weight: 600; display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #555c69; }
+.dot.on { background: #ff4d4d; box-shadow: 0 0 8px #ff4d4d; animation: pulse 1.4s infinite; }
+@keyframes pulse { 50% { opacity: 0.4; } }
+
+.banner { background: rgba(79, 124, 255, 0.25); padding: 4px 10px; font-size: 12px; }
+
+.transcript { border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 10px; }
+.transcript summary { cursor: pointer; font-weight: 600; }
+.transcript-body {
+  max-height: 120px; overflow-y: auto; margin-top: 6px; white-space: pre-wrap;
+  color: #c7cdd8; font-size: 12px;
+}
+.transcript-actions { text-align: right; margin-top: 4px; }
+
+.messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.empty { color: #a3abb9; }
+.empty ul { padding-left: 16px; margin: 4px 0; }
+kbd { background: rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 0 4px; font-size: 11px; }
+.msg { padding: 8px 10px; border-radius: 10px; max-width: 100%; word-wrap: break-word; }
+.msg.user { background: rgba(79, 124, 255, 0.22); align-self: flex-end; white-space: pre-wrap; }
+.msg.assistant { background: rgba(255, 255, 255, 0.06); }
+.msg.error { background: rgba(255, 77, 77, 0.18); color: #ffb3b3; }
+.msg .tag { font-size: 11px; color: #a9b8ff; display: block; margin-bottom: 2px; }
+.msg p { margin: 0 0 6px; }
+.msg p:last-child { margin-bottom: 0; }
+.msg ul, .msg ol { margin: 4px 0; padding-left: 18px; }
+.msg pre { background: rgba(0, 0, 0, 0.4); padding: 8px; border-radius: 6px; overflow-x: auto; }
+.msg code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+.msg :not(pre) > code { background: rgba(0, 0, 0, 0.35); padding: 0 4px; border-radius: 4px; }
+.cursor::after { content: "▍"; animation: pulse 1s infinite; }
+
+.composer { border-top: 1px solid rgba(255, 255, 255, 0.08); padding: 8px 10px; }
+.composer textarea {
+  width: 100%; resize: none; background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 6px 8px; outline: none;
+}
+.composer textarea:focus { border-color: #4f7cff; }
+.composer-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.composer-buttons { display: flex; gap: 6px; }
+.toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+.settings {
+  position: absolute; inset: 40px 0 0 0; background: rgba(18, 20, 26, 0.98);
+  padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
+}
+.settings h2 { margin: 0; font-size: 15px; }
+.settings label:not(.toggle) { display: flex; flex-direction: column; gap: 4px; color: #a3abb9; }
+.settings input:not([type="checkbox"]), .settings textarea {
+  background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px; padding: 6px 8px; color: #e9ecf1; outline: none;
+}
+.settings-actions { display: flex; justify-content: flex-end; gap: 6px; }
