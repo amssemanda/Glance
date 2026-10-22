@@ -29,7 +29,7 @@ const SETTING_FIELDS = [
 ];
 const SUGGEST_PROMPT = `Based on the latest part of the transcript, help me respond right now:
 1. **Say next** – 2-3 short options I could say, in first person.
-2. **Facts** – any key facts, numbers, or definitions relevant to what was just said.
+2. **Facts** – key facts, numbers, or definitions relevant to what was just said (only from the transcript, screen, my instructions, or general knowledge; use [placeholders] for my own details).
 3. **Ask** – 1-2 smart follow-up questions.
 Keep the whole thing under 120 words.`;
 const AUTO_SUGGEST_COOLDOWN_MS = 15000;
