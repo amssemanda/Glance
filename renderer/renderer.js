@@ -35,7 +35,11 @@ Keep the whole thing under 120 words.`;
 const AUTO_SUGGEST_COOLDOWN_MS = 15000;
 const PROVIDERS = {
   openai: { baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini', transcribeModel: 'whisper-1' },
-  openrouter: { baseUrl: 'https://openrouter.ai/api/v1', model: 'google/gemma-4-31b-it:free', transcribeModel: '' },
+  openrouter: {
+    baseUrl: 'https://openrouter.ai/api/v1',
+    model: 'google/gemma-4-31b-it:free, google/gemma-4-26b-a4b-it:free, dots-studio/dots-3-note-preview:free',
+    transcribeModel: '',
+  },
 };
 const STT_PROVIDERS = {
   same: { transcribeBaseUrl: '' },

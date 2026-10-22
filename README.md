@@ -20,7 +20,7 @@ On first launch, open Settings (gear icon), pick a provider, and paste your API 
 
 ### Free setup
 
-- **Chat + screen**: Provider **OpenRouter**, with a key from https://openrouter.ai/keys. The default model `google/gemma-4-31b-it:free` accepts images. Free models are rate-limited and change over time; see https://openrouter.ai/models?q=free.
+- **Chat + screen**: Provider **OpenRouter**, with a key from https://openrouter.ai/keys. The default model list (`google/gemma-4-31b-it:free`, then two fallbacks) accepts images. OpenRouter tries the next model when one is rate-limited. Free models are rate-limited and change over time; see https://openrouter.ai/models?q=free.
 - **Listening**: Speech-to-text provider **Groq**, with a key from https://console.groq.com/keys (model `whisper-large-v3-turbo`).
 
 ### Shortcuts

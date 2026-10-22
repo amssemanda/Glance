@@ -32,17 +32,24 @@ async function* parseSSE(body) {
 async function errorText(res) {
   const text = await res.text();
   try {
-    return JSON.parse(text).error?.message || text;
+    const { error } = JSON.parse(text);
+    return error?.metadata?.raw || error?.message || text;
   } catch {
     return text;
   }
+}
+
+// `model` may be a comma-separated list; extra entries are sent as OpenRouter fallbacks.
+function modelParams(model) {
+  const models = model.split(',').map((m) => m.trim()).filter(Boolean);
+  return models.length > 1 ? { model: models[0], models } : { model: models[0] };
 }
 
 async function* streamChat({ baseUrl, apiKey, model, messages, signal }) {
   const res = await request(`${trimSlash(baseUrl)}/chat/completions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ model, messages, stream: true }),
+    body: JSON.stringify({ ...modelParams(model), messages, stream: true }),
     signal,
   });
   if (!res.ok) throw new Error(`Chat request failed (${res.status}): ${await errorText(res)}`);
@@ -62,4 +69,4 @@ async function transcribe({ baseUrl, apiKey, model, audio, mime }) {
   return ((await res.json()).text || '').trim();
 }
 
-module.exports = { streamChat, transcribe, parseSSE };
+module.exports = { streamChat, transcribe, parseSSE, modelParams };

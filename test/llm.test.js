@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const server = require('./mock-server');
-const { streamChat, transcribe, parseSSE } = require('../src/llm');
+const { streamChat, transcribe, parseSSE, modelParams } = require('../src/llm');
 const { buildMessages } = require('../src/prompts');
 
 test('parseSSE handles split chunks and [DONE]', async () => {
@@ -14,6 +14,11 @@ test('parseSSE handles split chunks and [DONE]', async () => {
   let out = '';
   for await (const d of parseSSE(body())) out += d;
   assert.strictEqual(out, 'Hello');
+});
+
+test('modelParams splits fallback lists', () => {
+  assert.deepStrictEqual(modelParams('gpt-4o-mini'), { model: 'gpt-4o-mini' });
+  assert.deepStrictEqual(modelParams('a, b ,c'), { model: 'a', models: ['a', 'b', 'c'] });
 });
 
 test('buildMessages attaches screenshot and transcript', () => {
