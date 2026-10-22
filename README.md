@@ -7,7 +7,7 @@ An always-on-top AI copilot overlay for your desktop (similar to Cluely, but the
 - **Suggested replies**: get "say next", facts, and follow-up questions from the live transcript, on demand or automatically when someone asks a question.
 - **Chat**: follow-up questions keep context. Answers render as markdown with code blocks.
 - **Overlay controls**: frameless, translucent, draggable, and resizable. Click-through mode lets you work through it.
-- **Any OpenAI-compatible API**: OpenAI by default. You can point Base URL at OpenRouter, Groq, a local Ollama/LM Studio, and so on.
+- **Any OpenAI-compatible API**: built-in presets for OpenAI and OpenRouter. Speech-to-text can use a separate provider (e.g. Groq). Custom Base URLs work too (local Ollama/LM Studio, and so on).
 
 ## Run
 
@@ -16,7 +16,12 @@ npm install
 npm start
 ```
 
-On first launch, open Settings (gear icon) and paste your API key. Alternatively, start the app with `OPENAI_API_KEY` set in the environment.
+On first launch, open Settings (gear icon), pick a provider, and paste your API key. Alternatively, start the app with `OPENAI_API_KEY` set in the environment.
+
+### Free setup
+
+- **Chat + screen**: Provider **OpenRouter**, with a key from https://openrouter.ai/keys. The default model `google/gemma-4-31b-it:free` accepts images. Free models are rate-limited and change over time; see https://openrouter.ai/models?q=free.
+- **Listening**: Speech-to-text provider **Groq**, with a key from https://console.groq.com/keys (model `whisper-large-v3-turbo`).
 
 ### Shortcuts
 

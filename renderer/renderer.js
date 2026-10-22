@@ -16,13 +16,32 @@ const els = {
   banner: $('clickThroughBanner'),
 };
 
-const SETTING_FIELDS = ['apiKey', 'baseUrl', 'model', 'transcribeModel', 'captureSystemAudio', 'autoSuggest', 'customInstructions'];
+const SETTING_FIELDS = [
+  'apiKey',
+  'baseUrl',
+  'model',
+  'transcribeModel',
+  'transcribeBaseUrl',
+  'transcribeApiKey',
+  'captureSystemAudio',
+  'autoSuggest',
+  'customInstructions',
+];
 const SUGGEST_PROMPT = `Based on the latest part of the transcript, help me respond right now:
 1. **Say next** – 2-3 short options I could say, in first person.
 2. **Facts** – any key facts, numbers, or definitions relevant to what was just said.
 3. **Ask** – 1-2 smart follow-up questions.
 Keep the whole thing under 120 words.`;
 const AUTO_SUGGEST_COOLDOWN_MS = 15000;
+const PROVIDERS = {
+  openai: { baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini', transcribeModel: 'whisper-1' },
+  openrouter: { baseUrl: 'https://openrouter.ai/api/v1', model: 'google/gemma-4-31b-it:free', transcribeModel: '' },
+};
+const STT_PROVIDERS = {
+  same: { transcribeBaseUrl: '' },
+  groq: { transcribeBaseUrl: 'https://api.groq.com/openai/v1', transcribeModel: 'whisper-large-v3-turbo' },
+  openai: { transcribeBaseUrl: 'https://api.openai.com/v1', transcribeModel: 'whisper-1' },
+};
 
 let settings = {};
 let history = [];
@@ -132,6 +151,11 @@ function renderTranscript() {
 }
 
 async function onSegment(audio, mime) {
+  if (!settings.transcribeModel) {
+    if (listener) toggleListening();
+    addMessage('error', 'No speech-to-text configured. In Settings, pick a Speech-to-text provider (e.g. Groq, free) to use listening.');
+    return;
+  }
   try {
     const text = await api.transcribe(audio, mime);
     if (!text) return;
@@ -170,7 +194,35 @@ async function toggleListening() {
 }
 
 // ---------- settings ----------
+function detectProvider(baseUrl = '') {
+  return Object.keys(PROVIDERS).find((k) => PROVIDERS[k].baseUrl === baseUrl) || 'custom';
+}
+
+function applyProvider() {
+  const preset = PROVIDERS[$('provider').value];
+  if (!preset) return;
+  for (const [key, value] of Object.entries(preset)) {
+    if (key === 'transcribeModel' && $('sttProvider').value !== 'same') continue;
+    $(key).value = value;
+  }
+}
+
+function detectSttProvider(url = '') {
+  return Object.keys(STT_PROVIDERS).find((k) => STT_PROVIDERS[k].transcribeBaseUrl === url) || 'custom';
+}
+
+function applySttProvider() {
+  const choice = $('sttProvider').value;
+  const preset = STT_PROVIDERS[choice];
+  if (preset) for (const [key, value] of Object.entries(preset)) $(key).value = value;
+  if (choice === 'same') $('transcribeModel').value = PROVIDERS[$('provider').value]?.transcribeModel ?? $('transcribeModel').value;
+  $('sttFields').classList.toggle('hidden', choice === 'same');
+}
+
 function openSettings() {
+  $('provider').value = detectProvider(settings.baseUrl);
+  $('sttProvider').value = detectSttProvider(settings.transcribeBaseUrl);
+  $('sttFields').classList.toggle('hidden', $('sttProvider').value === 'same');
   for (const key of SETTING_FIELDS) {
     const el = $(key);
     if (el.type === 'checkbox') el.checked = !!settings[key];
@@ -196,6 +248,9 @@ els.listenBtn.addEventListener('click', toggleListening);
 $('settingsBtn').addEventListener('click', openSettings);
 $('settingsCancel').addEventListener('click', () => els.settingsPanel.classList.add('hidden'));
 $('settingsSave').addEventListener('click', saveSettings);
+$('provider').addEventListener('change', applyProvider);
+$('sttProvider').addEventListener('change', applySttProvider);
+$('baseUrl').addEventListener('input', (e) => ($('provider').value = detectProvider(e.target.value.trim())));
 $('hideBtn').addEventListener('click', api.hide);
 $('quitBtn').addEventListener('click', api.quit);
 $('clearTranscriptBtn').addEventListener('click', () => {

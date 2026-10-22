@@ -88,8 +88,9 @@ kbd { background: rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 0 4px; 
 }
 .settings h2 { margin: 0; font-size: 15px; }
 .settings label:not(.toggle) { display: flex; flex-direction: column; gap: 4px; color: #a3abb9; }
-.settings input:not([type="checkbox"]), .settings textarea {
+.settings input:not([type="checkbox"]), .settings textarea, .settings select {
   background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px; padding: 6px 8px; color: #e9ecf1; outline: none;
 }
+#sttFields { display: flex; flex-direction: column; gap: 10px; }
 .settings-actions { display: flex; justify-content: flex-end; gap: 6px; }

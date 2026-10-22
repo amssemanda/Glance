@@ -54,9 +54,28 @@
 
       <section id="settingsPanel" class="settings hidden">
         <h2>Settings</h2>
+        <label>Provider
+          <select id="provider">
+            <option value="openai">OpenAI</option>
+            <option value="openrouter">OpenRouter (has free models)</option>
+            <option value="custom">Custom (OpenAI-compatible)</option>
+          </select>
+        </label>
         <label>API key <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" /></label>
         <label>Base URL <input id="baseUrl" placeholder="https://api.openai.com/v1" /></label>
         <label>Chat model (vision-capable) <input id="model" placeholder="gpt-4o-mini" /></label>
+        <label>Speech-to-text provider
+          <select id="sttProvider">
+            <option value="same">Same as chat provider</option>
+            <option value="groq">Groq (free tier, Whisper)</option>
+            <option value="openai">OpenAI</option>
+            <option value="custom">Custom (OpenAI-compatible)</option>
+          </select>
+        </label>
+        <div id="sttFields">
+          <label>Speech-to-text API key <input id="transcribeApiKey" type="password" placeholder="gsk_… / sk-…" autocomplete="off" /></label>
+          <label>Speech-to-text base URL <input id="transcribeBaseUrl" placeholder="https://api.groq.com/openai/v1" /></label>
+        </div>
         <label>Transcription model <input id="transcribeModel" placeholder="whisper-1" /></label>
         <label class="toggle"><input type="checkbox" id="captureSystemAudio" /> Also capture system audio (Windows)</label>
         <label class="toggle"><input type="checkbox" id="autoSuggest" /> Auto-suggest when a question is heard</label>

@@ -120,8 +120,10 @@ ipcMain.on('ask:cancel', (_e, id) => inflight.get(id)?.abort());
 
 ipcMain.handle('transcribe', async (_e, audio, mime) => {
   const s = settings.load();
-  requireKey(s);
-  return transcribe({ ...s, model: s.transcribeModel, audio: Buffer.from(audio), mime });
+  const baseUrl = s.transcribeBaseUrl || s.baseUrl;
+  const apiKey = s.transcribeBaseUrl ? s.transcribeApiKey : s.apiKey;
+  requireKey({ baseUrl, apiKey });
+  return transcribe({ baseUrl, apiKey, model: s.transcribeModel, audio: Buffer.from(audio), mime });
 });
 
 ipcMain.on('window:hide', () => win?.hide());

@@ -7,6 +7,8 @@ const DEFAULTS = {
   baseUrl: 'https://api.openai.com/v1',
   model: 'gpt-4o-mini',
   transcribeModel: 'whisper-1',
+  transcribeBaseUrl: '',
+  transcribeApiKey: '',
   captureSystemAudio: false,
   autoSuggest: false,
   customInstructions: '',
@@ -36,19 +38,21 @@ function load() {
   try {
     raw = JSON.parse(fs.readFileSync(file(), 'utf8'));
   } catch {}
-  const { apiKey, ...rest } = raw;
+  const { apiKey, transcribeApiKey, ...rest } = raw;
   return {
     ...DEFAULTS,
     ...rest,
     apiKey: decrypt(apiKey) || process.env.OPENAI_API_KEY || '',
+    transcribeApiKey: decrypt(transcribeApiKey),
   };
 }
 
 function save(next) {
   const merged = { ...load(), ...next };
-  const { apiKey, ...rest } = merged;
+  const { apiKey, transcribeApiKey, ...rest } = merged;
   fs.mkdirSync(path.dirname(file()), { recursive: true });
-  fs.writeFileSync(file(), JSON.stringify({ ...rest, apiKey: encrypt(apiKey) }, null, 2));
+  const stored = { ...rest, apiKey: encrypt(apiKey), transcribeApiKey: encrypt(transcribeApiKey) };
+  fs.writeFileSync(file(), JSON.stringify(stored, null, 2));
   return merged;
 }
 
