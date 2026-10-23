@@ -60,7 +60,7 @@ You can also type a question in the box and press **Enter**. On a Mac, use `Cmd`
 Run from source (needs [Node.js](https://nodejs.org)):
 
 ```bash
-git clone https://github.com/tttppp352-cpu/Glance.git
+ git clone https://github.com/amssemanda/Glance.git
 cd Glance
 npm install
 npm start
