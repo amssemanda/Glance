@@ -1,4 +1,6 @@
-# Glance
+<p align="center"><img src="assets/icon.png" width="128" alt="Glance icon"></p>
+
+<h1 align="center">Glance</h1>
 
 A small AI helper that floats on top of your other windows. It can:
 
