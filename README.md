@@ -1,63 +1,78 @@
 # Glance
 
-An always-on-top AI copilot overlay for your desktop (similar to Cluely, but the overlay is **not** hidden from screen sharing).
+A small AI helper that floats on top of your other windows. It can:
 
-- **Ask about your screen**: press a hotkey to take a screenshot and send it, with your question, to a vision model. The answer streams back.
-- **Live transcription**: records your mic (and system audio on Windows) in 6-second chunks and transcribes them. Silent chunks are skipped.
-- **Suggested replies**: get "say next", facts, and follow-up questions from the live transcript, on demand or automatically when someone asks a question.
-- **Chat**: follow-up questions keep context. Answers render as markdown with code blocks.
-- **Overlay controls**: frameless, translucent, draggable, and resizable. Click-through mode lets you work through it.
-- **Any OpenAI-compatible API**: built-in presets for OpenAI and OpenRouter. Speech-to-text can use a separate provider (e.g. Groq). Custom Base URLs work too (local Ollama/LM Studio, and so on).
+- **Answer questions about your screen.** Press a shortcut and Glance looks at your screen and answers your question about it.
+- **Listen to your calls.** It writes down what's being said as you talk.
+- **Suggest what to say.** It gives you reply ideas and follow-up questions from the conversation.
 
-## Run
+Glance shows up normally when you share your screen. It isn't hidden.
+
+## Download (Windows)
+
+**[Download Glance for Windows](https://github.com/tttppp352-cpu/Glance/releases/latest/download/Glance-Setup-0.1.0.exe)**
+
+1. Open the downloaded file.
+2. If Windows says **"Windows protected your PC"**, click **More info**, then **Run anyway**. This shows up because the app isn't code-signed. It doesn't mean the app is unsafe.
+3. Glance installs and opens by itself. Next time, find it in the Start menu.
+
+## Set it up (free, about 5 minutes)
+
+Glance needs two free keys, which are like passwords for the AI services. Neither needs a credit card.
+
+1. **Chat key:** sign up at https://openrouter.ai and create a key at https://openrouter.ai/keys.
+2. **Listening key:** sign up at https://console.groq.com and create a key at https://console.groq.com/keys.
+3. In Glance, click the **gear icon** and set:
+   - **Provider:** OpenRouter, then paste your OpenRouter key
+   - **Speech-to-text provider:** Groq, then paste your Groq key
+4. Click **Save**.
+
+Your keys are stored encrypted on your computer and only sent to those two services.
+
+## How to use it
+
+| Press | What it does |
+| --- | --- |
+| `Ctrl+Shift+Enter` | Ask about your screen (type a question first, or leave it empty) |
+| `Ctrl+Shift+L` | Start/stop listening |
+| `Ctrl+Shift+K` | Suggest what to say next |
+| `Ctrl+Shift+Space` | Show/hide Glance |
+| `Ctrl+Shift+X` | Let clicks pass through Glance to the window behind |
+| `Esc` | Stop an answer |
+
+You can also type a question in the box and press **Enter**. On a Mac, use `Cmd` instead of `Ctrl`. Turn on **Auto-suggest when a question is heard** in Settings to get suggestions without pressing anything.
+
+**Tip:** to get suggestions with your real details (prices, products, your role), write them under **Custom instructions** in Settings. Otherwise Glance leaves blanks like `[price]` and doesn't guess.
+
+## Good to know
+
+- **Free limits:** the free AI services have daily limits. If you get a "rate limited" message, wait a bit and try again.
+- **Privacy:** Glance doesn't save your chats, transcripts or screenshots. They disappear when you close it. Only your settings are saved. Screenshots and audio go to OpenRouter and Groq when you use those features.
+- **Hearing the other person on a call:** on Windows, turn on **Also capture system audio (Windows)** in Settings. On Mac, Glance hears only your microphone unless you set up a tool like BlackHole.
+- **Mac:** the first time, allow **Screen Recording** and **Microphone** for Glance in System Settings → Privacy & Security, then reopen it.
+
+---
+
+## For developers
+
+Run from source (needs [Node.js](https://nodejs.org)):
 
 ```bash
+git clone https://github.com/tttppp352-cpu/Glance.git
+cd Glance
 npm install
 npm start
 ```
 
-On first launch, open Settings (gear icon), pick a provider, and paste your API key. Alternatively, start the app with `OPENAI_API_KEY` set in the environment.
+- `npm test`: unit tests and API integration tests against a mock server
+- `npm run mock`: OpenAI-compatible mock API at `http://localhost:8787/v1`, so you can try it without keys
+- `npm run dist`: build an installer for your OS into `dist/`
 
-### Free setup
+Glance works with any OpenAI-compatible API (OpenAI, OpenRouter, Ollama, LM Studio, …). Pick **Custom** in Settings and enter the Base URL. Setting `OPENAI_API_KEY` in the environment works too.
 
-- **Chat + screen**: Provider **OpenRouter**, with a key from https://openrouter.ai/keys. The default model list (`google/gemma-4-31b-it:free`, then two fallbacks) accepts images. OpenRouter tries the next model when one is rate-limited. Free models are rate-limited and change over time; see https://openrouter.ai/models?q=free.
-- **Listening**: Speech-to-text provider **Groq**, with a key from https://console.groq.com/keys (model `whisper-large-v3-turbo`).
-
-### Shortcuts
-
-| Shortcut | Action |
-| --- | --- |
-| `Ctrl/Cmd+Shift+Enter` | Ask about the screen (uses any text typed in the box as the question) |
-| `Ctrl/Cmd+Shift+L` | Start/stop listening |
-| `Ctrl/Cmd+Shift+K` | Suggest what to say from the transcript |
-| `Ctrl/Cmd+Shift+Space` | Show/hide the overlay |
-| `Ctrl/Cmd+Shift+X` | Toggle click-through |
-| `Esc` | Stop the current answer |
-
-### Permissions
-
-- **macOS**: grant Screen Recording and Microphone access in System Settings → Privacy & Security, then restart the app.
-- **System audio** (the other side of a call): captured via loopback on Windows only. On macOS/Linux, route call audio through a virtual device (e.g. BlackHole, PulseAudio monitor) and select it as the input.
-
-## Try it without an API key
-
-```bash
-npm run mock      # OpenAI-compatible mock on http://localhost:8787/v1
-```
-
-Then set Base URL to `http://localhost:8787/v1` in Settings.
-
-## Test / package
-
-```bash
-npm test          # unit + API integration tests against the mock
-npm run dist      # build an installer for the current OS into dist/
-```
-
-## Layout
-
-- `main.js`: window, global shortcuts, screen capture, IPC
-- `src/llm.js`: streaming chat + transcription client (OpenAI-compatible)
-- `src/prompts.js`: system prompt and message building
-- `src/settings.js`: settings persistence (API key encrypted with OS keychain via `safeStorage` when available)
-- `renderer/`: overlay UI, audio recorder, and a tiny markdown renderer
+Code layout:
+- `main.js`: window, shortcuts, screen capture
+- `src/llm.js`: chat and speech-to-text client
+- `src/prompts.js`: AI instructions
+- `src/settings.js`: settings storage (keys encrypted with the OS keychain)
+- `renderer/`: the overlay UI and audio recorder
